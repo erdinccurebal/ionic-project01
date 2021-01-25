@@ -10,6 +10,7 @@
       <ion-header collapse="condense">
         <ion-toolbar>
           <ion-title>Sende Paylaş</ion-title>
+          
         </ion-toolbar>
       </ion-header>
 
@@ -40,6 +41,8 @@
 </template>
 
 <script lang="ts">
+import { mapMutations } from "vuex";
+
 import {
   IonContent,
   IonHeader,
@@ -49,7 +52,7 @@ import {
   IonButton,
   IonCol,
   IonGrid,
-  IonRow,
+  IonRow
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 
@@ -66,6 +69,12 @@ export default defineComponent({
     IonGrid,
     IonRow,
   },
+  methods: {
+    ...mapMutations(["closedSidemenu"])
+  },
+  created(){
+    this.closedSidemenu();
+  }
 });
 </script>
 

@@ -8,7 +8,7 @@
               <ion-title style="margin-top: 7px" class="title">Kayıt</ion-title>
             </ion-col>
             <ion-col size="2" offset="6">
-              <routerLink to="/Start"
+              <routerLink to="/start"
                 ><ion-button style="float: right" color="danger"
                   >Geri Git</ion-button
                 ></routerLink
@@ -32,7 +32,7 @@
             <ion-col size="8" offset="2">
               <ion-item>
                 <ion-label>Kullanıcı Adı:</ion-label>
-                <ion-input></ion-input>
+                <ion-input @ionInput="username = $event.target.value"></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>
@@ -40,13 +40,13 @@
             <ion-col size="8" offset="2">
               <ion-item>
                 <ion-label>Şifre:</ion-label>
-                <ion-input></ion-input>
+                <ion-input @keydown.enter="register" type="password" @ionInput="password = $event.target.value"></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>
           <ion-row>
             <ion-col size="8" offset="2">
-              <ion-button size="large" expand="block" color="warning"
+              <ion-button @click="register" size="large" expand="block" color="warning"
                 >Kayıt Ol</ion-button
               >
             </ion-col>
@@ -58,6 +58,7 @@
 </template>
 
 <script lang="ts">
+import { mapActions } from "vuex";
 import {
   IonContent,
   IonHeader,
@@ -68,6 +69,7 @@ import {
   IonCol,
   IonGrid,
   IonRow,
+  toastController 
 } from "@ionic/vue";
 import { defineComponent } from "vue";
 
@@ -82,8 +84,48 @@ export default defineComponent({
     IonButton,
     IonCol,
     IonGrid,
-    IonRow,
+    IonRow 
   },
+  data(){
+    return {
+      username: '',
+      password: ''
+    }
+  },
+  methods: {
+    ...mapActions({
+      vuexRegister: "register"
+    }),
+    register() {
+      const user = {username: this.username, password: this.password};
+      this.vuexRegister(user)
+      .then(data => {
+        this.$router.push("/signin");
+        this.openToast();
+      })
+      .catch(error => {
+        this.errorToast(error.response.data.message)
+      })
+    },
+    async openToast() {
+      const toast = await toastController
+        .create({
+          message: 'Giriş ekranına yönlendiriliyorsunuz.',
+          duration: 3000,
+          header: 'KAYIT BAŞARILI'
+        })
+      return toast.present();
+    },
+    async errorToast(error: string) {
+      const toast = await toastController
+        .create({
+          message: error,
+          duration: 5000,
+          header: 'UYARI'
+        })
+      return toast.present();
+    }
+  }
 });
 </script>
 
